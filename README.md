@@ -1,12 +1,12 @@
 # instollar-sdk
 
-Cross-platform SDK for **Instollar**, usable in **React** and **React Native** apps.
+SDK for **Instollar**: **React** (web) and **Expo** apps.
 
 ## Features
 
-- **Storage** – Platform-agnostic storage (web: `localStorage`, mobile: AsyncStorage or Expo SecureStore)
+- **Storage** – Web: `localStorage`. Expo: **Expo SecureStore** (encrypted).
 - **API** – Axios-based HTTP client with auth, token refresh, and error handling
-- **Toast** – Simple cross-platform toasts (web: DOM; React Native: console)
+- **Toast** – Simple cross-platform toasts (web: DOM; Expo: console)
 - **Types** – TypeScript types for config, tokens, and API responses
 
 ## Install
@@ -15,12 +15,10 @@ Cross-platform SDK for **Instollar**, usable in **React** and **React Native** a
 npm install instollar-sdk axios
 ```
 
-For React Native with secure storage (optional):
+Expo apps (for SecureStore on mobile):
 
 ```bash
-npm install expo-secure-store
-# or
-npm install @react-native-async-storage/async-storage
+npx expo install expo-secure-store
 ```
 
 ## Setup
@@ -37,60 +35,37 @@ import {
   StorageKeys,
 } from 'instollar-sdk';
 
-// 1. Storage
 initStorage(createWebStorage());
-
-// 2. API
 initAxios({
   baseUrl: 'https://api.instollar.com',
-  onAuthError: () => {
-    window.location.href = '/login';
-  },
+  onAuthError: () => { window.location.href = '/login'; },
   onError: (err) => console.error(err.message),
 });
 
-// 3. After login, save tokens
-await saveToStorage(StorageKeys.TOKEN_DATA, {
-  token: 'access-token',
-  refreshToken: 'refresh-token',
-});
-
-// 4. Use API
+await saveToStorage(StorageKeys.TOKEN_DATA, { token: '...', refreshToken: '...' });
 const { data } = await api.get('/users/me');
 ```
 
-### React Native
+### Expo
 
 ```ts
 import {
   initStorage,
-  createMobileStorage,
+  createExpoSecureStorage,
   initAxios,
   api,
   saveToStorage,
   StorageKeys,
 } from 'instollar-sdk';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 1. Storage (AsyncStorage or Expo SecureStore via createExpoSecureStorage)
-initStorage(createMobileStorage(AsyncStorage));
-
-// 2. API
+initStorage(createExpoSecureStorage());
 initAxios({
   baseUrl: 'https://api.instollar.com',
-  onAuthError: () => {
-    // e.g. navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
-  },
+  onAuthError: () => { /* e.g. router.replace('/login') */ },
   onError: (err) => Alert.alert('Error', err.message),
 });
 
-// 3. After login
-await saveToStorage(StorageKeys.TOKEN_DATA, {
-  token: 'access-token',
-  refreshToken: 'refresh-token',
-});
-
-// 4. Use API
+await saveToStorage(StorageKeys.TOKEN_DATA, { token: '...', refreshToken: '...' });
 const { data } = await api.get('/users/me');
 ```
 
@@ -99,15 +74,12 @@ const { data } = await api.get('/users/me');
 ```ts
 import { initStorageAuto, initAxios, api } from 'instollar-sdk';
 
-initStorageAuto(); // uses localStorage on web, Expo SecureStore on mobile
+initStorageAuto(); // web → localStorage, Expo → SecureStore
 initAxios({ baseUrl: 'https://api.instollar.com' });
-
 const { data } = await api.get('/users/me');
 ```
 
 ## API client
-
-The `api` object supports:
 
 - `api.get<T>(url, params?, options?, metadata?)`
 - `api.post<T>(url, data?, options?, metadata?)`
@@ -117,35 +89,26 @@ The `api` object supports:
 - `api.formData<T>(url, formData, method?, options?, metadata?)`
 - `api.request<T>(endpoint, options, metadata?)`
 
-Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401, the SDK will try to refresh using `refreshTokenEndpoint` (`/auth/refresh` by default) and retry the request.
+Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401, the SDK refreshes using `refreshTokenEndpoint` and retries.
 
 ## Storage
 
 - **Web:** `createWebStorage()` (localStorage)
-- **React Native:** `createMobileStorage(AsyncStorage)` or `createExpoSecureStorage()` (requires `expo-secure-store`)
+- **Expo:** `createExpoSecureStorage()` (Expo SecureStore, encrypted)
 
-Storage keys:
-
-- `StorageKeys.TOKEN_DATA` – access + refresh token
-- `StorageKeys.APP_CONFIG` – app config
-
+Keys: `StorageKeys.TOKEN_DATA`, `StorageKeys.APP_CONFIG`.  
 Helpers: `getFromStorage<T>(key)`, `saveToStorage(key, value)`, `removeFromStorage(key)`, `clearStorage()`.
 
 ## Subpath exports
 
-- `instollar-sdk` – main entry (storage, api, types, toast)
+- `instollar-sdk` – main entry
 - `instollar-sdk/storage` – storage only
-- `instollar-sdk/api` – api + axios setup + endpoints
+- `instollar-sdk/api` – api + axios + endpoints
 - `instollar-sdk/toast` – toast only
 
 ## Endpoints
 
-Default endpoint constants are in `core/api/api-endpoints.ts`. You can override or extend them:
-
-- `loginEndpoint`, `refreshTokenEndpoint`, `logoutEndpoint`
-- `getCurrentUserEndpoint`, `updateUserEndpoint(userId)`
-
-Use your own routes by passing full paths to `api.get/post/...`.
+See `core/api/api-endpoints.ts`: `loginEndpoint`, `refreshTokenEndpoint`, `logoutEndpoint`, `getCurrentUserEndpoint`, `updateUserEndpoint(userId)`. Override or pass full paths to `api.get/post/...`.
 
 ## License
 

@@ -15,6 +15,5 @@ export {
   clearStorage,
 } from './storage';
 export { createWebStorage } from './web-storage';
-export { createMobileStorage, createExpoSecureStorage } from './mobile-storage';
-export type { AsyncStorageLike } from './mobile-storage';
+export { createExpoSecureStorage } from './mobile-storage';
 export { detectPlatform, isWeb, isMobile } from './platform-detection';

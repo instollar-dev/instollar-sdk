@@ -1,5 +1,5 @@
 /**
- * instollar-sdk – Cross-platform SDK for React and React Native
+ * instollar-sdk – SDK for React (web) and Expo apps
  *
  * @example Web:
  * ```ts
@@ -9,16 +9,15 @@
  * const res = await api.get('/users/me');
  * ```
  *
- * @example React Native:
+ * @example Expo:
  * ```ts
- * import { initStorage, createMobileStorage, initAxios, api } from 'instollar-sdk';
- * import AsyncStorage from '@react-native-async-storage/async-storage';
- * initStorage(createMobileStorage(AsyncStorage));
+ * import { initStorage, createExpoSecureStorage, initAxios, api } from 'instollar-sdk';
+ * initStorage(createExpoSecureStorage());
  * initAxios({ baseUrl: 'https://api.example.com', onAuthError: () => { /* navigate to login *\/ } });
  * const res = await api.get('/users/me');
  * ```
  *
- * @example Auto-detect platform:
+ * @example Auto-detect platform (web → localStorage, Expo → SecureStore):
  * ```ts
  * import { initStorageAuto, initAxios, api } from 'instollar-sdk';
  * initStorageAuto();
@@ -38,13 +37,12 @@ export {
   removeFromStorage,
   clearStorage,
   createWebStorage,
-  createMobileStorage,
   createExpoSecureStorage,
   detectPlatform,
   isWeb,
   isMobile,
 } from './core/storage';
-export type { IStorage, AsyncStorageLike } from './core/storage';
+export type { IStorage } from './core/storage';
 
 // API
 export { initAxios, getSDKConfig, getAxiosInstance, api } from './core/api';

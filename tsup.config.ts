@@ -15,10 +15,6 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: [
-    'axios',
-    'expo-secure-store',
-    '@react-native-async-storage/async-storage',
-  ],
+  external: ['axios', 'expo-secure-store'],
   minify: process.env.NODE_ENV === 'production',
 });

@@ -1,7 +1,7 @@
 {
   "name": "instollar-sdk",
   "version": "1.0.0",
-  "description": "Cross-platform SDK for Instollar - works with React and React Native",
+  "description": "SDK for Instollar - React (web) and Expo apps",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -42,7 +42,7 @@
     "sdk",
     "api",
     "react",
-    "react-native",
+    "expo",
     "cross-platform"
   ],
   "license": "MIT",

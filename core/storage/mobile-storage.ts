@@ -1,25 +1,11 @@
 /**
- * Mobile storage: AsyncStorage-like and Expo SecureStore
+ * Mobile storage using Expo SecureStore (encrypted)
+ * Used for Expo apps. Loaded dynamically so web-only builds don't require expo-secure-store.
  */
 
 import { IStorage } from './storage';
 
-export interface AsyncStorageLike {
-  getItem(key: string): Promise<string | null>;
-  setItem(key: string, value: string): Promise<void>;
-  removeItem(key: string): Promise<void>;
-  clear(): Promise<void>;
-}
-
-export const createMobileStorage = (asyncStorage: AsyncStorageLike): IStorage => ({
-  getItem: (key) => asyncStorage.getItem(key),
-  setItem: (key, value) => asyncStorage.setItem(key, value),
-  removeItem: (key) => asyncStorage.removeItem(key),
-  clear: () => asyncStorage.clear(),
-});
-
 export const createExpoSecureStorage = (): IStorage => {
-  // Dynamic require so expo-secure-store is optional for web-only builds
   const SecureStore = require('expo-secure-store') as {
     getItemAsync: (key: string) => Promise<string | null>;
     setItemAsync: (key: string, value: string) => Promise<void>;
@@ -47,4 +33,4 @@ export const createExpoSecureStorage = (): IStorage => {
   };
 };
 
-export default createMobileStorage;
+export default createExpoSecureStorage;
