@@ -115,6 +115,29 @@ const api = {
   ): Promise<AxiosResponse<T>> =>
     apiRequest<T>(endpoint, formDataOptions({ ...options, method, data: formData }, true), metadata),
 
+  /**
+   * Send a request with full control over method, body, params, and headers.
+   * Use this when you need a method other than GET/POST/PUT/PATCH/DELETE, or when
+   * you already have a full Axios-style config object.
+   *
+   * @param endpoint - URL path (e.g. '/users/me'). Base URL is applied by the SDK.
+   * @param options - Axios request config (without `url`): method, data, params, headers, timeout, etc.
+   * @param metadata - Optional SDK metadata: showErrorToast, skipRefreshToken, requestId, context.
+   * @returns Promise resolving to AxiosResponse<T> (use .data for the response body).
+   *
+   * @example GET with params
+   * const res = await api.request<User[]>('/users', { method: 'GET', params: { page: 1 } });
+   *
+   * @example POST with body and custom headers
+   * const res = await api.request<CreatedUser>('/users', {
+   *   method: 'POST',
+   *   data: { name: 'Jane' },
+   *   headers: { 'X-Custom': 'value' },
+   * });
+   *
+   * @example Suppress error toast for this request
+   * const res = await api.request<Data>('/noisy-endpoint', { method: 'GET' }, { showErrorToast: false });
+   */
   request: apiRequest,
 };
 
