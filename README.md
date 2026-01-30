@@ -37,7 +37,7 @@ import {
 
 initStorage(createWebStorage());
 initAxios({
-  baseUrl: 'https://api.instollar.com',
+  baseUrl: 'https://api.instollar.co',
   onAuthError: () => { window.location.href = '/login'; },
   onError: (err) => console.error(err.message),
 });
@@ -60,7 +60,7 @@ import {
 
 initStorage(createExpoSecureStorage());
 initAxios({
-  baseUrl: 'https://api.instollar.com',
+  baseUrl: 'https://api.instollar.co',
   onAuthError: () => { /* e.g. router.replace('/login') */ },
   onError: (err) => Alert.alert('Error', err.message),
 });
@@ -75,7 +75,7 @@ const { data } = await api.get('/users/me');
 import { initStorageAuto, initAxios, api } from 'instollar-sdk';
 
 initStorageAuto(); // web → localStorage, Expo → SecureStore
-initAxios({ baseUrl: 'https://api.instollar.com' });
+initAxios({ baseUrl: 'https://api.instollar.co' });
 const { data } = await api.get('/users/me');
 ```
 
