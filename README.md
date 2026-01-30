@@ -91,6 +91,35 @@ const { data } = await api.get('/users/me');
 
 Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401, the SDK refreshes using `refreshTokenEndpoint` and retries.
 
+## API response types
+
+Backend responses are typed with `ApiResponse<T>`, `PaginationMeta`, and `SortOrder`. Use them so responses are consistent across the app.
+
+```ts
+import { api, ApiResponse, PaginationMeta } from 'instollar-sdk';
+
+interface User {
+  id: string;
+  name: string;
+}
+
+// List endpoint with pagination
+const res = await api.get<ApiResponse<User[]>>('/users', { page: 1, limit: 20 });
+const list = res.data?.data;              // User[] | undefined
+const pagination = res.data?.pagination;  // PaginationMeta | undefined
+const message = res.data?.message;
+
+// Single resource
+const userRes = await api.get<ApiResponse<User>>('/users/me');
+const user = userRes.data?.data;
+```
+
+**Types:**
+
+- **`ApiResponse<T>`** – `data`, `pagination`, `message`, `success`, `errors` (field errors as `Record<string, string[]>`)
+- **`PaginationMeta`** – `page`, `limit`, `total`, `totalPages`, `hasNext`, `hasPrev`, `nextPage`, `prevPage`, `sortOrder`
+- **`SortOrder`** – `'asc' | 'desc'`
+
 ## Storage
 
 - **Web:** `createWebStorage()` (localStorage)

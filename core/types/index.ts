@@ -29,6 +29,31 @@ export interface GeneralResponseModel<T = unknown> {
   errors?: string | string[];
 }
 
+/**
+ * General API response types for the app.
+ */
+export type SortOrder = 'asc' | 'desc';
+
+export interface PaginationMeta {
+  page?: number | null;
+  limit?: number | null;
+  total?: number | null;
+  totalPages?: number | null;
+  hasNext?: boolean | null;
+  hasPrev?: boolean | null;
+  nextPage?: number | null;
+  prevPage?: number | null;
+  sortOrder?: SortOrder | null;
+}
+
+export interface ApiResponse<T> {
+  data?: T | null;
+  pagination?: PaginationMeta;
+  message?: string | null;
+  success?: boolean | null;
+  errors?: Record<string, string[]> | null;
+}
+
 export interface ServerError {
   errors?: string | string[];
   message?: string | null;
