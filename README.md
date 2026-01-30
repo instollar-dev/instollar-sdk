@@ -11,11 +11,47 @@ SDK for **Instollar**: **React** (web) and **Expo** apps.
 
 ## Install
 
+### From npm (when published)
+
 ```bash
 npm install instollar-sdk axios
 ```
 
-Expo apps (for SecureStore on mobile):
+### From the repo
+
+Install directly from the GitHub repo (no npm publish needed):
+
+```bash
+npm install github:instollar-dev/instollar-sdk axios
+```
+
+**Branch or tag:** add `#branch` or `#v1.0.0`:
+
+```bash
+npm install github:instollar-dev/instollar-sdk#main axios
+npm install github:instollar-dev/instollar-sdk#v1.0.0 axios
+```
+
+**Local path** (e.g. sibling folder or monorepo):
+
+```bash
+npm install ../instollar-sdk axios
+```
+
+Or in your app’s `package.json`:
+
+```json
+{
+  "dependencies": {
+    "instollar-sdk": "file:../instollar-sdk",
+    "axios": "^1.6.0"
+  }
+}
+```
+
+The package runs `prepare` on install, so it builds automatically when installed from Git or a local path.
+
+### Expo apps (for SecureStore on mobile)
 
 ```bash
 npx expo install expo-secure-store
