@@ -51,6 +51,23 @@ Or in your app’s `package.json`:
 
 The package runs `prepare` on install, so it builds automatically when installed from Git or a local path.
 
+**Private repo (CI / CodeBuild):**  
+The repo is private, so CI needs a GitHub token to clone it.
+
+1. **package.json** – use HTTPS so the lockfile doesn’t use SSH:
+   ```json
+   "instollar-sdk": "git+https://github.com/instollar-dev/instollar-sdk.git"
+   ```
+
+2. **GitHub token** – create a Personal Access Token (Settings → Developer settings → PAT) with `repo` scope. In CodeBuild, add it as an env var (e.g. `GITHUB_TOKEN`) from Secrets Manager or the project env.
+
+3. **Before `npm install` in your build** – tell git to use the token for GitHub:
+   ```yaml
+   - git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+   - npm install
+   ```
+   Then any `git+https://github.com/...` dependency will be cloned with the token. Never commit the token.
+
 ### Expo apps (for SecureStore on mobile)
 
 ```bash
