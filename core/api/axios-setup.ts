@@ -144,7 +144,22 @@ export const initAxios = (config: InstollarSDKConfig): void => {
   );
 
   axiosInstance.interceptors.response.use(
-    (res: AxiosResponse) => res,
+    (res: AxiosResponse) => {
+      const config = res.config as CustomInternalAxiosRequestConfig;
+      const metadata = config.metadata;
+      if (metadata?.showSuccessToast) {
+        const isObj = typeof metadata.showSuccessToast === 'object';
+        const msgFromObj = isObj ? (metadata.showSuccessToast as any).message : undefined;
+        const message =
+          typeof metadata.showSuccessToast === 'string'
+            ? metadata.showSuccessToast
+            : msgFromObj || res.data?.message || 'Operation successful';
+        
+        const options = isObj ? metadata.showSuccessToast : {};
+        toast.success(message, options as any);
+      }
+      return res;
+    },
     async (error: AxiosError<ServerError>) => {
       const config = getSDKConfig();
       const original = error.config as CustomInternalAxiosRequestConfig | undefined;
@@ -180,7 +195,9 @@ export const initAxios = (config: InstollarSDKConfig): void => {
       const cleanError = createCleanError(error, message);
 
       if (metadata?.showErrorToast !== false) {
-        toast.error(cleanError.message);
+        const isObj = typeof metadata?.showErrorToast === 'object';
+        const options = isObj ? metadata.showErrorToast : {};
+        toast.error(cleanError.message, options as any);
         config.onError?.(cleanError);
       }
 

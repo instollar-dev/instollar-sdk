@@ -144,6 +144,44 @@ const { data } = await api.get('/users/me');
 
 Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401, the SDK refreshes using `refreshTokenEndpoint` and retries.
 
+## Toasts & Feedback
+
+The SDK includes a built-in toast system with a modern **Sonner-style** aesthetic (glassmorphism, animations). You can trigger toasts automatically from your API calls using the `metadata` object.
+
+### Basic Usage
+Pass `true` to use the message from the server response:
+```ts
+api.post('/role/create', payload, {}, { 
+  showSuccessToast: true, 
+  showErrorToast: true 
+});
+```
+
+### Advanced Options
+You can pass a `string` for a custom message, or an `object` for full control:
+```ts
+api.post('/update', data, {}, {
+  showSuccessToast: {
+    message: 'Saved!',
+    position: 'bottom-center',
+    autoClose: 2000
+  },
+  showErrorToast: {
+    message: 'Failed to update',
+    closeOnClick: false
+  }
+});
+```
+
+**Metadata Options:**
+- `showSuccessToast`: `boolean | string | ToastOptions`
+- `showErrorToast`: `boolean | ToastOptions`
+
+**ToastOptions:**
+- `position`: `'top-right' | 'top-center' | 'top-left' | 'bottom-right' | 'bottom-center' | 'bottom-left'`
+- `autoClose`: number (ms), default `5000`
+- `closeOnClick`: boolean, default `true`
+
 ## API response types
 
 Backend responses are typed with `ApiResponse<T>`, `PaginationMeta`, and `SortOrder`. Use them so responses are consistent across the app.
