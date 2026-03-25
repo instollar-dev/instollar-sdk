@@ -146,10 +146,14 @@ Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401
 
 ## Toasts & Feedback
 
-The SDK includes a built-in toast system with a modern **Sonner-style** aesthetic (glassmorphism, animations). You can trigger toasts automatically from your API calls using the `metadata` object.
+The SDK includes a built-in, multi-line toast system with icons and context-aware styling.
+
+### Automatic Extraction
+When you use `showSuccessToast: true` or `showErrorToast: true`, the SDK intelligently extracts content from the API response/error:
+- **Title**: Success state (e.g., "Update Successful") or Error type (e.g., "CONFLICT").
+- **Description**: The message returned by the server.
 
 ### Basic Usage
-Pass `true` to use the message from the server response:
 ```ts
 api.post('/role/create', payload, {}, { 
   showSuccessToast: true, 
@@ -157,30 +161,20 @@ api.post('/role/create', payload, {}, {
 });
 ```
 
-### Advanced Options
-You can pass a `string` for a custom message, or an `object` for full control:
+### Advanced Customization
 ```ts
 api.post('/update', data, {}, {
   showSuccessToast: {
-    message: 'Saved!',
-    position: 'bottom-center',
-    autoClose: 2000
-  },
-  showErrorToast: {
-    message: 'Failed to update',
-    closeOnClick: false
+    title: 'Custom Title',
+    description: 'Custom Description',
+    position: 'bottom-center'
   }
 });
 ```
 
-**Metadata Options:**
-- `showSuccessToast`: `boolean | string | ToastOptions`
-- `showErrorToast`: `boolean | ToastOptions`
-
-**ToastOptions:**
-- `position`: `'top-right' | 'top-center' | 'top-left' | 'bottom-right' | 'bottom-center' | 'bottom-left'`
-- `autoClose`: number (ms), default `5000`
-- `closeOnClick`: boolean, default `true`
+### Behavior
+- **Hover to Pause**: Hovering over a toast pauses the auto-close timer.
+- **Dismissible**: All toasts have a close button and are dismissible by default.
 
 ## API response types
 

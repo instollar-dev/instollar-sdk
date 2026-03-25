@@ -78,7 +78,9 @@ export interface ApiError {
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'default';
 
 export interface ToastOptions {
-  message: string;
+  message?: string;
+  title?: string;
+  description?: string;
   type?: ToastType;
   autoClose?: number;
   closeOnClick?: boolean;

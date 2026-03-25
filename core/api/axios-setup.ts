@@ -149,14 +149,18 @@ export const initAxios = (config: InstollarSDKConfig): void => {
       const metadata = config.metadata;
       if (metadata?.showSuccessToast) {
         const isObj = typeof metadata.showSuccessToast === 'object';
-        const msgFromObj = isObj ? (metadata.showSuccessToast as any).message : undefined;
-        const message =
-          typeof metadata.showSuccessToast === 'string'
-            ? metadata.showSuccessToast
-            : msgFromObj || res.data?.message || 'Operation successful';
+        const method = config.method?.toUpperCase();
         
-        const options = isObj ? metadata.showSuccessToast : {};
-        toast.success(message, options as any);
+        let defaultTitle = 'Success';
+        if (method === 'POST') defaultTitle = 'Action Successful';
+        if (method === 'PUT' || method === 'PATCH') defaultTitle = 'Update Successful';
+        if (method === 'DELETE') defaultTitle = 'Deletion Successful';
+
+        const toastOpts = isObj ? (metadata.showSuccessToast as any) : {};
+        const title = toastOpts.title || defaultTitle;
+        const description = toastOpts.description || toastOpts.message || res.data?.message;
+        
+        toast.success(description, { ...toastOpts, title });
       }
       return res;
     },
@@ -196,8 +200,14 @@ export const initAxios = (config: InstollarSDKConfig): void => {
 
       if (metadata?.showErrorToast !== false) {
         const isObj = typeof metadata?.showErrorToast === 'object';
-        const options = isObj ? metadata.showErrorToast : {};
-        toast.error(cleanError.message, options as any);
+        const toastOpts = isObj ? (metadata.showErrorToast as any) : {};
+        
+        // Extract error type as title (e.g., "CONFLICT")
+        const errorData = error.response?.data as any;
+        const title = toastOpts.title || errorData?.error || 'Error';
+        const description = toastOpts.description || toastOpts.message || cleanError.message;
+
+        toast.error(description, { ...toastOpts, title });
         config.onError?.(cleanError);
       }
 
