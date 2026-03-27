@@ -122,7 +122,7 @@ const api = {
    *
    * @param endpoint - URL path (e.g. '/users/me'). Base URL is applied by the SDK.
    * @param options - Axios request config (without `url`): method, data, params, headers, timeout, etc.
-   * @param metadata - Optional SDK metadata: showErrorToast, skipRefreshToken, requestId, context.
+   * @param metadata - Optional SDK metadata: showErrorToast, showSuccessToast, skipRefreshToken, requestId, context.
    * @returns Promise resolving to AxiosResponse<T> (use .data for the response body).
    *
    * @example GET with params
@@ -137,6 +137,9 @@ const api = {
    *
    * @example Suppress error toast for this request
    * const res = await api.request<Data>('/noisy-endpoint', { method: 'GET' }, { showErrorToast: false });
+   *
+   * @example Show success toast for a POST request
+   * const res = await api.request<Data>('/update', { method: 'POST', data: { name: 'New' } }, { showSuccessToast: true });
    */
   request: apiRequest,
 };

@@ -144,6 +144,38 @@ const { data } = await api.get('/users/me');
 
 Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401, the SDK refreshes using `refreshTokenEndpoint` and retries.
 
+## Toasts & Feedback
+
+The SDK includes a built-in, multi-line toast system with icons and context-aware styling.
+
+### Automatic Extraction
+When you use `showSuccessToast: true` or `showErrorToast: true`, the SDK intelligently extracts content from the API response/error:
+- **Title**: Success state (e.g., "Update Successful") or Error type (e.g., "CONFLICT").
+- **Description**: The message returned by the server.
+
+### Basic Usage
+```ts
+api.post('/role/create', payload, {}, { 
+  showSuccessToast: true, 
+  showErrorToast: true 
+});
+```
+
+### Advanced Customization
+```ts
+api.post('/update', data, {}, {
+  showSuccessToast: {
+    title: 'Custom Title',
+    description: 'Custom Description',
+    position: 'bottom-center'
+  }
+});
+```
+
+### Behavior
+- **Hover to Pause**: Hovering over a toast pauses the auto-close timer.
+- **Dismissible**: All toasts have a close button and are dismissible by default.
+
 ## API response types
 
 Backend responses are typed with `ApiResponse<T>`, `PaginationMeta`, and `SortOrder`. Use them so responses are consistent across the app.

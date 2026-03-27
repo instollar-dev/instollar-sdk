@@ -67,4 +67,4 @@ export type {
 
 // Toast
 export { toast } from './core/toast';
-export type { ToastType, ToastOptions } from './core/toast';
+export type { ToastType, ToastOptions } from './core/types';

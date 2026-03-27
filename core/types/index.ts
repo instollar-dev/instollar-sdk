@@ -62,7 +62,7 @@ export interface ServerError {
 export interface ApiError {
   message: string;
   metadata?: {
-    showErrorToast?: boolean;
+    showErrorToast?: boolean | Partial<ToastOptions>;
   };
   response?: {
     status: number;
@@ -72,11 +72,34 @@ export interface ApiError {
 }
 
 // ============================================
+// Toast Types
+// ============================================
+
+export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'default';
+
+export interface ToastOptions {
+  message?: string;
+  title?: string;
+  description?: string;
+  type?: ToastType;
+  autoClose?: number;
+  closeOnClick?: boolean;
+  position?:
+    | 'top-right'
+    | 'top-center'
+    | 'top-left'
+    | 'bottom-right'
+    | 'bottom-center'
+    | 'bottom-left';
+}
+
+// ============================================
 // Request Metadata Types
 // ============================================
 
 export interface ApiRequestMetadata {
-  showErrorToast?: boolean;
+  showErrorToast?: boolean | Partial<ToastOptions>;
+  showSuccessToast?: boolean | string | Partial<ToastOptions>;
   skipRefreshToken?: boolean;
   requestId?: string;
   context?: unknown;

@@ -144,7 +144,26 @@ export const initAxios = (config: InstollarSDKConfig): void => {
   );
 
   axiosInstance.interceptors.response.use(
-    (res: AxiosResponse) => res,
+    (res: AxiosResponse) => {
+      const config = res.config as CustomInternalAxiosRequestConfig;
+      const metadata = config.metadata;
+      if (metadata?.showSuccessToast) {
+        const isObj = typeof metadata.showSuccessToast === 'object';
+        const method = config.method?.toUpperCase();
+        
+        let defaultTitle = 'Success';
+        if (method === 'POST') defaultTitle = 'Action Successful';
+        if (method === 'PUT' || method === 'PATCH') defaultTitle = 'Update Successful';
+        if (method === 'DELETE') defaultTitle = 'Deletion Successful';
+
+        const toastOpts = isObj ? (metadata.showSuccessToast as any) : {};
+        const title = toastOpts.title || defaultTitle;
+        const description = toastOpts.description || toastOpts.message || res.data?.message;
+        
+        toast.success(description, { ...toastOpts, title });
+      }
+      return res;
+    },
     async (error: AxiosError<ServerError>) => {
       const config = getSDKConfig();
       const original = error.config as CustomInternalAxiosRequestConfig | undefined;
@@ -180,7 +199,15 @@ export const initAxios = (config: InstollarSDKConfig): void => {
       const cleanError = createCleanError(error, message);
 
       if (metadata?.showErrorToast !== false) {
-        toast.error(cleanError.message);
+        const isObj = typeof metadata?.showErrorToast === 'object';
+        const toastOpts = isObj ? (metadata.showErrorToast as any) : {};
+        
+        // Extract error type as title (e.g., "CONFLICT")
+        const errorData = error.response?.data as any;
+        const title = toastOpts.title || errorData?.error || 'Error';
+        const description = toastOpts.description || toastOpts.message || cleanError.message;
+
+        toast.error(description, { ...toastOpts, title });
         config.onError?.(cleanError);
       }
 
