@@ -7,6 +7,7 @@ SDK for **Instollar**: **React** (web) and **Expo** apps.
 - **Storage** – Web: `localStorage`. Expo: **Expo SecureStore** (encrypted).
 - **API** – Axios-based HTTP client with auth, token refresh, and error handling
 - **Toast** – Simple cross-platform toasts (web: DOM; Expo: console)
+- **Countries** – Country/state/LGA dataset with search and lookup helpers
 - **Types** – TypeScript types for config, tokens, and API responses
 
 ## Install
@@ -213,12 +214,36 @@ const user = userRes.data?.data;
 Keys: `StorageKeys.TOKEN_DATA`, `StorageKeys.APP_CONFIG`.  
 Helpers: `getFromStorage<T>(key)`, `saveToStorage(key, value)`, `removeFromStorage(key)`, `clearStorage()`.
 
+## Countries
+
+Use the built-in countries dataset and helpers:
+
+```ts
+import {
+  COUNTRIES,
+  getStatesForCountry,
+  getLGAsForState,
+  searchCountries,
+} from 'instollar-sdk';
+
+const nigeriaStates = getStatesForCountry('NG');
+const anambraLgas = getLGAsForState('NG', 'Anambra');
+const results = searchCountries('nig');
+```
+
+You can also import only the countries module:
+
+```ts
+import { COUNTRIES, searchCountries } from 'instollar-sdk/countries';
+```
+
 ## Subpath exports
 
 - `instollar-sdk` – main entry
 - `instollar-sdk/storage` – storage only
 - `instollar-sdk/api` – api + axios + endpoints
 - `instollar-sdk/toast` – toast only
+- `instollar-sdk/countries` – countries data + helper utilities
 
 ## Endpoints
 
