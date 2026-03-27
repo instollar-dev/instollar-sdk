@@ -6,6 +6,7 @@ export default defineConfig({
     'core/api/index': 'core/api/index.ts',
     'core/storage/index': 'core/storage/index.ts',
     'core/toast/index': 'core/toast/index.ts',
+    'core/app/countries/index': 'core/app/countries/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: {

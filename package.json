@@ -25,6 +25,11 @@
       "types": "./dist/core/toast/index.d.ts",
       "import": "./dist/core/toast/index.mjs",
       "require": "./dist/core/toast/index.js"
+    },
+    "./countries": {
+      "types": "./dist/core/app/countries/index.d.ts",
+      "import": "./dist/core/app/countries/index.mjs",
+      "require": "./dist/core/app/countries/index.js"
     }
   },
   "files": [

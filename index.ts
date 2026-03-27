@@ -48,6 +48,15 @@ export type { IStorage } from './core/storage';
 export { initAxios, getSDKConfig, getAxiosInstance, api } from './core/api';
 export * from './core/api/api-endpoints';
 
+// Countries
+export {
+  COUNTRIES,
+  getLGAsForState,
+  getStatesForCountry,
+  searchCountries,
+} from './core/app/countries';
+export type { LGA, State, Country } from './core/app/countries';
+
 // Types
 export type {
   TokenData,
