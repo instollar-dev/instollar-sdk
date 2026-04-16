@@ -3,6 +3,7 @@
  */
 
 import { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
+import type { ManagerOptions, SocketOptions } from 'socket.io-client';
 
 // ============================================
 // Token & Auth Types
@@ -130,6 +131,17 @@ export interface InstollarSDKConfig {
   onAuthError?: () => void;
   onTokenRefreshed?: (tokenData: TokenData) => void;
   defaultHeaders?: Record<string, string>;
+}
+
+export type SocketEventMap = Record<string, (...args: any[]) => void>;
+
+export type SocketEventHandler<TPayload = unknown> = (payload: TPayload) => void;
+
+export interface InstollarSocketConfig {
+  url: string;
+  requireAuth?: boolean;
+  options?: Partial<ManagerOptions & SocketOptions>;
+  buildAuth?: (tokenData: TokenData | null) => Record<string, unknown> | undefined;
 }
 
 // ============================================

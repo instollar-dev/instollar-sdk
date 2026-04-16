@@ -48,6 +48,21 @@ export type { IStorage } from './core/storage';
 export { initAxios, getSDKConfig, getAxiosInstance, api } from './core/api';
 export * from './core/api/api-endpoints';
 
+// Socket
+export {
+  initSocket,
+  connectSocket,
+  reconnectSocket,
+  refreshSocketAuth,
+  getSocket,
+  isSocketConnected,
+  disconnectSocket,
+  socketOn,
+  socketOnce,
+  socketOff,
+  socketEmit,
+} from './core/socket';
+
 // Countries
 export {
   COUNTRIES,
@@ -71,7 +86,10 @@ export type {
   CustomAxiosRequestConfig,
   CustomInternalAxiosRequestConfig,
   InstollarSDKConfig,
+  InstollarSocketConfig,
   Platform,
+  SocketEventHandler,
+  SocketEventMap,
 } from './core/types';
 
 // Toast

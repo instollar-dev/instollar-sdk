@@ -6,7 +6,7 @@ SDK for **Instollar**: **React** (web) and **Expo** apps.
 
 - **Storage** – Web: `localStorage`. Expo: **Expo SecureStore** (encrypted).
 - **API** – Axios-based HTTP client with auth, token refresh, and error handling
-- **Realtime auth helper pattern** – Reuse SDK-managed tokens when wiring your own socket client
+- **Socket** – Built-in realtime connection helpers with token-aware auth
 - **Toast** – Simple cross-platform toasts (web: DOM; Expo: console)
 - **Countries** – Country/state/LGA dataset with search and lookup helpers
 - **Types** – TypeScript types for config, tokens, and API responses
@@ -148,92 +148,131 @@ Tokens are read from storage and sent as `Authorization: Bearer <token>`. On 401
 
 ## Socket connections
 
-The SDK does not currently export a socket client or socket helper. The recommended pattern for a consuming app is:
+The SDK now includes a socket client wrapper for consuming apps. It reads the current access token from SDK storage and gives you helpers to connect, listen for events, and emit events with payloads.
 
-1. Initialize storage and axios with the SDK.
-2. Save login tokens into SDK storage as usual.
-3. Read the access token from `StorageKeys.TOKEN_DATA`.
-4. Pass that token into your app's own socket client.
+### Setup
 
-### Example with `socket.io-client`
-
-Install a socket library in the consuming app:
-
-```bash
-npm install socket.io-client
-```
-
-Create a small socket wrapper in your app:
+Initialize the socket once in your app:
 
 ```ts
-import { getFromStorage, StorageKeys, type TokenData } from 'instollar-sdk';
-import { io, type Socket } from 'socket.io-client';
+import { initSocket } from 'instollar-sdk';
 
-let socket: Socket | null = null;
-
-export const connectSocket = async (): Promise<Socket> => {
-  const tokenData = await getFromStorage<TokenData>(StorageKeys.TOKEN_DATA);
-
-  if (!tokenData?.token) {
-    throw new Error('Cannot connect socket without an access token.');
-  }
-
-  socket = io('https://api.instollar.co', {
-    transports: ['websocket'],
-    auth: {
-      token: tokenData.token,
-    },
-  });
-
-  return socket;
-};
-
-export const getSocket = (): Socket | null => socket;
-
-export const disconnectSocket = (): void => {
-  socket?.disconnect();
-  socket = null;
-};
-```
-
-Use it after login or once the app boots with a stored session:
-
-```ts
-import { connectSocket } from './socket';
-
-const socket = await connectSocket();
-
-socket.on('connect', () => {
-  console.log('socket connected', socket.id);
+initSocket({
+  url: 'https://api.instollar.co',
 });
+```
 
-socket.on('notification', (payload) => {
+By default, the SDK sends the access token as:
+
+```ts
+auth: {
+  token: '<access-token>',
+}
+```
+
+If your backend expects a different auth shape, customize it with `buildAuth`:
+
+```ts
+import { initSocket } from 'instollar-sdk';
+
+initSocket({
+  url: 'https://api.instollar.co',
+  buildAuth: (tokenData) => ({
+    accessToken: tokenData?.token,
+    refreshToken: tokenData?.refreshToken,
+  }),
+});
+```
+
+### Connect and disconnect
+
+```ts
+import { connectSocket, disconnectSocket } from 'instollar-sdk';
+
+await connectSocket();
+
+disconnectSocket();
+```
+
+### Listen to events
+
+```ts
+import { connectSocket, socketOn, socketOff } from 'instollar-sdk';
+
+await connectSocket();
+
+const unsubscribeNotification = socketOn('notification', (payload) => {
   console.log('notification', payload);
 });
+
+socketOn('wallet.updated', (payload) => {
+  console.log('wallet updated', payload);
+});
+
+unsubscribeNotification();
+socketOff('wallet.updated');
 ```
 
-### Refreshing the socket token
-
-If your backend expects the latest access token on the socket connection, reconnect the socket when the SDK refreshes tokens:
+You can also listen once:
 
 ```ts
-import { initAxios } from 'instollar-sdk';
-import { connectSocket, disconnectSocket } from './socket';
+import { connectSocket, socketOnce } from 'instollar-sdk';
+
+await connectSocket();
+
+socketOnce('session.ready', (payload) => {
+  console.log('session ready', payload);
+});
+```
+
+### Emit events with payloads
+
+```ts
+import { connectSocket, socketEmit } from 'instollar-sdk';
+
+await connectSocket();
+
+socketEmit('join.room', { roomId: 'abc123' });
+socketEmit('send.message', {
+  roomId: 'abc123',
+  body: 'Hello from the SDK',
+});
+```
+
+### Refreshing socket auth
+
+If the SDK refreshes the HTTP token and your backend expects the socket to reconnect with the latest token, use `refreshSocketAuth` in `onTokenRefreshed`:
+
+```ts
+import { initAxios, refreshSocketAuth } from 'instollar-sdk';
 
 initAxios({
   baseUrl: 'https://api.instollar.co',
   onTokenRefreshed: async () => {
-    disconnectSocket();
-    await connectSocket();
+    await refreshSocketAuth();
   },
 });
 ```
 
+### Available helpers
+
+- `initSocket(config)` - initialize the socket configuration before any connection attempt
+- `connectSocket()` - connect with the latest token stored by the SDK and return the socket instance
+- `reconnectSocket()` - force a fresh connection using the latest auth payload
+- `refreshSocketAuth()` - reconnect an existing socket after token refresh and return `null` if no socket exists yet
+- `disconnectSocket()` - disconnect and clear the current socket instance
+- `getSocket()` - access the underlying `socket.io-client` instance when you need lower-level control
+- `isSocketConnected()` - check whether the current socket is connected
+- `socketOn(event, handler)` - subscribe to an event and receive an unsubscribe function
+- `socketOnce(event, handler)` - subscribe to the next occurrence of an event only
+- `socketOff(event, handler?)` - remove a specific handler or all handlers for an event
+- `socketEmit(event, payload?)` - emit an event with an optional payload to the server
+
 ### Notes
 
-- Keep the socket setup in the consuming app, not inside the SDK.
 - Use the same base URL or realtime host your backend expects.
-- If your backend expects the token in headers or query params instead of `auth`, pass it in the format your server requires.
+- Call `initSocket()` before `connectSocket()`.
+- The socket connection requires `StorageKeys.TOKEN_DATA` to already contain a token unless you set `requireAuth: false`.
 - On logout, call `disconnectSocket()` and clear SDK storage.
 
 ## Toasts & Feedback
@@ -333,6 +372,7 @@ import { COUNTRIES, searchCountries } from 'instollar-sdk/countries';
 - `instollar-sdk` – main entry
 - `instollar-sdk/storage` – storage only
 - `instollar-sdk/api` – api + axios + endpoints
+- `instollar-sdk/socket` – socket connection helpers
 - `instollar-sdk/toast` – toast only
 - `instollar-sdk/countries` – countries data + helper utilities
 

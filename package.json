@@ -21,6 +21,11 @@
       "import": "./dist/core/storage/index.mjs",
       "require": "./dist/core/storage/index.js"
     },
+    "./socket": {
+      "types": "./dist/core/socket/index.d.ts",
+      "import": "./dist/core/socket/index.mjs",
+      "require": "./dist/core/socket/index.js"
+    },
     "./toast": {
       "types": "./dist/core/toast/index.d.ts",
       "import": "./dist/core/toast/index.mjs",
@@ -53,7 +58,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "socket.io-client": "^4.8.3"
   },
   "peerDependencies": {
     "expo-secure-store": ">=10.0.0"
