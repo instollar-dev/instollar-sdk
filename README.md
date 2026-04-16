@@ -162,15 +162,21 @@ initSocket({
 });
 ```
 
-By default, the SDK sends the access token as:
+When `connectSocket()` runs, the SDK reads `StorageKeys.TOKEN_DATA` and sends the access token in both places by default:
 
 ```ts
 auth: {
   token: '<access-token>',
 }
+
+query: {
+  Authorization: 'Bearer <access-token>',
+}
 ```
 
-If your backend expects a different auth shape, customize it with `buildAuth`:
+This makes it work for backends that read the token from either the socket `auth` payload or the connection query string.
+
+If your backend expects a different `auth` shape, customize it with `buildAuth`:
 
 ```ts
 import { initSocket } from 'instollar-sdk';
@@ -181,6 +187,21 @@ initSocket({
     accessToken: tokenData?.token,
     refreshToken: tokenData?.refreshToken,
   }),
+});
+```
+
+If you already pass custom socket query params in `options.query`, the SDK preserves them and adds `Authorization` alongside them:
+
+```ts
+import { initSocket } from 'instollar-sdk';
+
+initSocket({
+  url: 'https://api.instollar.co',
+  options: {
+    query: {
+      tenantId: 'tenant_123',
+    },
+  },
 });
 ```
 
@@ -258,8 +279,8 @@ initAxios({
 
 - `initSocket(config)` - initialize the socket configuration before any connection attempt
 - `connectSocket()` - connect with the latest token stored by the SDK and return the socket instance
-- `reconnectSocket()` - force a fresh connection using the latest auth payload
-- `refreshSocketAuth()` - reconnect an existing socket after token refresh and return `null` if no socket exists yet
+- `reconnectSocket()` - force a fresh connection using the latest auth payload and query token
+- `refreshSocketAuth()` - reconnect an existing socket after token refresh so both auth and query token stay current, and return `null` if no socket exists yet
 - `disconnectSocket()` - disconnect and clear the current socket instance
 - `getSocket()` - access the underlying `socket.io-client` instance when you need lower-level control
 - `isSocketConnected()` - check whether the current socket is connected
@@ -273,6 +294,7 @@ initAxios({
 - Use the same base URL or realtime host your backend expects.
 - Call `initSocket()` before `connectSocket()`.
 - The socket connection requires `StorageKeys.TOKEN_DATA` to already contain a token unless you set `requireAuth: false`.
+- The SDK adds `Authorization=Bearer <token>` to the socket query string automatically on connection.
 - On logout, call `disconnectSocket()` and clear SDK storage.
 
 ## Toasts & Feedback

@@ -18,9 +18,26 @@ const getSocketConfig = (): ResolvedSocketConfig => {
 const resolveTokenData = async (): Promise<TokenData | null> =>
   getFromStorage<TokenData>(StorageKeys.TOKEN_DATA);
 
-const buildAuthPayload = async (
+const buildQueryPayload = (
+  config: ResolvedSocketConfig,
+  tokenData: TokenData | null
+): Record<string, string> | undefined => {
+  const token = tokenData?.token;
+  const baseQuery = (config.options?.query ?? {}) as Record<string, string>;
+
+  if (!token) {
+    return Object.keys(baseQuery).length ? baseQuery : undefined;
+  }
+
+  return {
+    ...baseQuery,
+    Authorization: `Bearer ${token}`,
+  };
+};
+
+const buildConnectionOptions = async (
   config: ResolvedSocketConfig
-): Promise<Record<string, unknown> | undefined> => {
+): Promise<Partial<ManagerOptions & SocketOptions>> => {
   const tokenData = await resolveTokenData();
   const token = tokenData?.token;
 
@@ -28,22 +45,15 @@ const buildAuthPayload = async (
     throw new Error('[instollar-sdk] Cannot connect socket without an access token.');
   }
 
-  if (config.buildAuth) {
-    return config.buildAuth(tokenData);
-  }
+  const auth = config.buildAuth ? config.buildAuth(tokenData) : token ? { token } : undefined;
+  const query = buildQueryPayload(config, tokenData);
 
-  return token ? { token } : undefined;
-};
-
-const buildConnectionOptions = async (
-  config: ResolvedSocketConfig
-): Promise<Partial<ManagerOptions & SocketOptions>> => {
-  const auth = await buildAuthPayload(config);
   return {
     autoConnect: false,
     transports: ['websocket'],
     ...config.options,
     auth,
+    query,
   };
 };
 
