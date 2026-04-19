@@ -56,9 +56,9 @@ const buildConnectionOptions = async (
 
   return {
     autoConnect: false,
-    reconnection: false,  // WE control reconnection — disable socket.io's built-in loop
-    ...config.options,
-    auth,
+    reconnection: false,  // WE control reconnection
+    ...config.options, 
+    // auth, // Removed: sending auth payload causes "Invalid namespace" on this BE
     query,
   };
 };
