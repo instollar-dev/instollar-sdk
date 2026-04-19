@@ -118,7 +118,7 @@ export const connectSocket = async (): Promise<SocketClient> => {
       }
 
       if (!socket.connected) {
-        return new Promise<SocketClient>((resolve, reject) => {
+        await new Promise<SocketClient>((resolve, reject) => {
           const timeout = setTimeout(() => {
             reject(new Error('[instollar-sdk] Socket connection timeout (10s)'));
           }, 10000);
@@ -138,6 +138,8 @@ export const connectSocket = async (): Promise<SocketClient> => {
       }
 
       return socket;
+    } catch (err) {
+      throw err;
     } finally {
       connectingPromise = null;
     }
