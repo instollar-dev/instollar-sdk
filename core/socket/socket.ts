@@ -51,14 +51,12 @@ const buildConnectionOptions = async (
     throw new Error('[instollar-sdk] Cannot connect socket without an access token.');
   }
 
-  const auth = config.buildAuth ? config.buildAuth(tokenData) : token ? { token } : undefined;
   const query = buildQueryPayload(config, tokenData);
 
   return {
     autoConnect: false,
     reconnection: false,  // WE control reconnection
     ...config.options, 
-    // auth, // Removed: sending auth payload causes "Invalid namespace" on this BE
     query,
   };
 };
