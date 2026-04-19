@@ -103,10 +103,7 @@ export const initSocket = (config: InstollarSocketConfig): void => {
 export const connectSocket = async (): Promise<SocketClient> => {
   const config = getSocketConfig();
 
-  // If we are already connected, reuse
   if (socket?.connected) return socket;
-
-  // If a connection is already in progress, wait for it
   if (connectingPromise) return connectingPromise;
 
   connectingPromise = (async () => {
@@ -120,7 +117,23 @@ export const connectSocket = async (): Promise<SocketClient> => {
       }
 
       if (!socket.connected) {
-        socket.connect();
+        return new Promise<SocketClient>((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('[instollar-sdk] Socket connection timeout (10s)'));
+          }, 10000);
+
+          socket?.once('connect', () => {
+            clearTimeout(timeout);
+            resolve(socket as SocketClient);
+          });
+
+          socket?.once('connect_error', (err) => {
+            clearTimeout(timeout);
+            reject(err);
+          });
+
+          socket?.connect();
+        });
       }
 
       return socket;
