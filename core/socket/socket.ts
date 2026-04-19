@@ -67,19 +67,20 @@ const buildConnectionOptions = async (
  * Call this once before `connectSocket()` to define the realtime URL and auth mapping.
  */
 export const initSocket = (config: InstollarSocketConfig): void => {
-  // Check if we are already initialized with this exact URL and Path
-  const isSameConfig = 
+  // 1. Strict Idempotency: If we already have a socket to this target, do NOTHING.
+  // This prevents reconnection loops from rapid caller re-renders.
+  const isSameTarget = 
+    socket && 
     socketConfig && 
     socketConfig.url === config.url && 
     socketConfig.options?.path === config.options?.path;
 
-  // Ultimate Idempotency: If the config is identical, do absolutely nothing.
-  // This prevents reconnection loops from multiple callers.
-  if (isSameConfig && socket) {
+  if (isSameTarget) {
     return;
   }
 
-  const isUrlOrPathChanging = 
+  const isChangingTarget = 
+    socket && 
     socketConfig && 
     (socketConfig.url !== config.url || socketConfig.options?.path !== config.options?.path);
 
@@ -88,9 +89,9 @@ export const initSocket = (config: InstollarSocketConfig): void => {
     url: config.url,
   };
 
-  // Only disconnect if the target is actually changing.
-  if (socket && isUrlOrPathChanging) {
-    socket.disconnect();
+  // 2. Only disconnect if we are actually switching servers/paths.
+  if (isChangingTarget) {
+    socket?.disconnect();
     socket = null;
     connectingPromise = null;
   }
@@ -127,7 +128,7 @@ export const connectSocket = async (): Promise<SocketClient> => {
             resolve(socket as SocketClient);
           });
 
-          socket?.once('connect_error', (err) => {
+          socket?.once('connect_error', (err: Error) => {
             clearTimeout(timeout);
             reject(err);
           });
