@@ -67,12 +67,16 @@ const buildConnectionOptions = async (
  * Call this once before `connectSocket()` to define the realtime URL and auth mapping.
  */
 export const initSocket = (config: InstollarSocketConfig): void => {
+  const isUrlChanging = socketConfig && socketConfig.url !== config.url;
+  
   socketConfig = {
     ...config,
     url: config.url,
   };
 
-  if (socket) {
+  // Only disconnect if the URL is actually different. 
+  // This prevents React re-renders from killing active connections.
+  if (socket && isUrlChanging) {
     socket.disconnect();
     socket = null;
   }
@@ -145,8 +149,11 @@ export const isSocketConnected = (): boolean => Boolean(socket?.connected);
  * Closes the current socket connection and clears the cached socket instance.
  */
 export const disconnectSocket = (): void => {
-  socket?.disconnect();
-  socket = null;
+  if (socket) {
+    socket.disconnect();
+    socket = null;
+    connectingPromise = null;
+  }
 };
 
 /**
