@@ -56,7 +56,8 @@ const buildConnectionOptions = async (
 
   return {
     autoConnect: false,
-    ...config.options, // Spread user options first so they can be default
+    reconnection: false,  // WE control reconnection — disable socket.io's built-in loop
+    ...config.options,
     auth,
     query,
   };
@@ -139,11 +140,16 @@ export const connectSocket = async (): Promise<SocketClient> => {
 
       return socket;
     } catch (err) {
-      throw err;
-    } finally {
+      socket = null;         // Wipe the failed socket so next call tries fresh
       connectingPromise = null;
+      throw err;
     }
   })();
+
+  // Clear connectingPromise once the promise itself resolves/rejects
+  connectingPromise.finally(() => {
+    connectingPromise = null;
+  });
 
   return connectingPromise;
 };
