@@ -67,18 +67,32 @@ const buildConnectionOptions = async (
  * Call this once before `connectSocket()` to define the realtime URL and auth mapping.
  */
 export const initSocket = (config: InstollarSocketConfig): void => {
-  const isUrlChanging = socketConfig && socketConfig.url !== config.url;
-  
+  // Check if we are already initialized with this exact URL and Path
+  const isSameConfig = 
+    socketConfig && 
+    socketConfig.url === config.url && 
+    socketConfig.options?.path === config.options?.path;
+
+  // Ultimate Idempotency: If the config is identical, do absolutely nothing.
+  // This prevents reconnection loops from multiple callers.
+  if (isSameConfig && socket) {
+    return;
+  }
+
+  const isUrlOrPathChanging = 
+    socketConfig && 
+    (socketConfig.url !== config.url || socketConfig.options?.path !== config.options?.path);
+
   socketConfig = {
     ...config,
     url: config.url,
   };
 
-  // Only disconnect if the URL is actually different. 
-  // This prevents React re-renders from killing active connections.
-  if (socket && isUrlChanging) {
+  // Only disconnect if the target is actually changing.
+  if (socket && isUrlOrPathChanging) {
     socket.disconnect();
     socket = null;
+    connectingPromise = null;
   }
 };
 
