@@ -7,6 +7,7 @@ type ResolvedSocketConfig = InstollarSocketConfig & { url: string };
 
 let socketConfig: ResolvedSocketConfig | null = null;
 let socket: SocketClient | null = null;
+let connectingPromise: Promise<SocketClient> | null = null;
 
 const getSocketConfig = (): ResolvedSocketConfig => {
   if (!socketConfig) {
@@ -27,6 +28,11 @@ const buildQueryPayload = (
 
   if (!token) {
     return Object.keys(baseQuery).length ? baseQuery : undefined;
+  }
+
+  // Only add Bearer if not already provided by the user manually
+  if (baseQuery.Authorization) {
+    return baseQuery;
   }
 
   return {
@@ -50,8 +56,7 @@ const buildConnectionOptions = async (
 
   return {
     autoConnect: false,
-    transports: ['websocket'],
-    ...config.options,
+    ...config.options, // Spread user options first so they can be default
     auth,
     query,
   };
@@ -79,19 +84,34 @@ export const initSocket = (config: InstollarSocketConfig): void => {
  */
 export const connectSocket = async (): Promise<SocketClient> => {
   const config = getSocketConfig();
-  const options = await buildConnectionOptions(config);
 
-  if (!socket) {
-    socket = io(config.url, options);
-  } else {
-    socket.auth = options.auth ?? {};
-  }
+  // If we are already connected, reuse
+  if (socket?.connected) return socket;
 
-  if (!socket.connected) {
-    socket.connect();
-  }
+  // If a connection is already in progress, wait for it
+  if (connectingPromise) return connectingPromise;
 
-  return socket;
+  connectingPromise = (async () => {
+    try {
+      const options = await buildConnectionOptions(config);
+
+      if (!socket) {
+        socket = io(config.url, options);
+      } else {
+        socket.auth = options.auth ?? {};
+      }
+
+      if (!socket.connected) {
+        socket.connect();
+      }
+
+      return socket;
+    } finally {
+      connectingPromise = null;
+    }
+  })();
+
+  return connectingPromise;
 };
 
 /**
@@ -138,7 +158,10 @@ export const socketOn = <TPayload = unknown>(
 ): (() => void) => {
   const instance = getSocket();
   if (!instance) {
-    throw new Error('[instollar-sdk] Socket not connected. Call connectSocket() first.');
+    // If not connected, we try to auto-connect or at least log.
+    // Throwing here crashes React apps during fast-refresh.
+    console.warn('[instollar-sdk] socketOn called before connectSocket(). Listener may not attach.');
+    return () => {};
   }
 
   instance.on(event, handler as SocketEventHandler);
