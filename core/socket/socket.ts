@@ -252,11 +252,19 @@ export const socketOff = <TPayload = unknown>(
 
 /**
  * Emits a socket event with an optional payload to the server.
+ * When `event` is omitted, the payload is sent as a raw message via `socket.send()`
+ * so the backend receives just the plain object — no event name envelope.
  */
-export const socketEmit = <TPayload = unknown>(event: string, payload?: TPayload): void => {
+export const socketEmit = <TPayload = unknown>(event: string | TPayload, payload?: TPayload): void => {
   const instance = getSocket();
   if (!instance) {
     throw new Error('[instollar-sdk] Socket not connected. Call connectSocket() first.');
+  }
+
+  // If `event` is not a string, treat it as the payload and send raw
+  if (typeof event !== 'string') {
+    instance.send(event);
+    return;
   }
 
   if (payload === undefined) {
