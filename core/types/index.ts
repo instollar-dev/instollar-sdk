@@ -56,7 +56,7 @@ export interface ApiResponse<T> {
 }
 
 export interface ServerError {
-  errors?: string | string[];
+  errors?: string | string[] | Record<string, unknown> | unknown[];
   message?: string | null;
 }
 

@@ -43,13 +43,40 @@ const removeEmpty = (obj: unknown): unknown => {
   );
 };
 
+const extractMessageFromUnknown = (value: unknown): string | null => {
+  if (!value) return null;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed.length ? trimmed : null;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const message = extractMessageFromUnknown(item);
+      if (message) return message;
+    }
+    return null;
+  }
+
+  if (typeof value === 'object') {
+    for (const nestedValue of Object.values(value as Record<string, unknown>)) {
+      const message = extractMessageFromUnknown(nestedValue);
+      if (message) return message;
+    }
+  }
+
+  return null;
+};
+
 const getServerMessage = (error: AxiosError<ServerError>): string | null => {
   const data = error.response?.data;
   if (!data) return null;
-  const errs = data.errors;
-  if (Array.isArray(errs) && errs.length) return errs[0];
-  if (typeof errs === 'string') return errs;
-  return data.message ?? null;
+  const errorsMessage = extractMessageFromUnknown(data.errors);
+  if (errorsMessage) return errorsMessage;
+  return extractMessageFromUnknown(data.message);
 };
 
 const getErrorMessage = (error: AxiosError<ServerError>): string => {
