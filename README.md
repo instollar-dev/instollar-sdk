@@ -389,6 +389,27 @@ You can also import only the countries module:
 import { COUNTRIES, searchCountries } from 'instollar-sdk/countries';
 ```
 
+## Languages
+
+Use the built-in languages dataset (Africa-first list covering West, East, Central, North and Southern Africa plus major platform languages like English, French, Portuguese, Spanish) and helpers:
+
+```ts
+import {
+  LANGUAGES,
+  searchLanguages,
+  getLanguageByCode,
+} from 'instollar-sdk';
+
+const yoruba = getLanguageByCode('yo');
+const results = searchLanguages('swa');
+```
+
+You can also import only the languages module:
+
+```ts
+import { LANGUAGES, searchLanguages } from 'instollar-sdk/languages';
+```
+
 ## Subpath exports
 
 - `instollar-sdk` – main entry
@@ -397,6 +418,7 @@ import { COUNTRIES, searchCountries } from 'instollar-sdk/countries';
 - `instollar-sdk/socket` – socket connection helpers
 - `instollar-sdk/toast` – toast only
 - `instollar-sdk/countries` – countries data + helper utilities
+- `instollar-sdk/languages` – languages data + helper utilities
 
 ## Endpoints
 

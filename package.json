@@ -35,6 +35,11 @@
       "types": "./dist/core/app/countries/index.d.ts",
       "import": "./dist/core/app/countries/index.mjs",
       "require": "./dist/core/app/countries/index.js"
+    },
+    "./languages": {
+      "types": "./dist/core/app/languages/index.d.ts",
+      "import": "./dist/core/app/languages/index.mjs",
+      "require": "./dist/core/app/languages/index.js"
     }
   },
   "files": [

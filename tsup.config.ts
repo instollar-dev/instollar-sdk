@@ -8,6 +8,7 @@ export default defineConfig({
     'core/socket/index': 'core/socket/index.ts',
     'core/toast/index': 'core/toast/index.ts',
     'core/app/countries/index': 'core/app/countries/index.ts',
+    'core/app/languages/index': 'core/app/languages/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: {

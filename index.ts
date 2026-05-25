@@ -95,3 +95,11 @@ export type {
 // Toast
 export { toast } from './core/toast';
 export type { ToastType, ToastOptions } from './core/types';
+
+// Languages
+export {
+  LANGUAGES,
+  searchLanguages,
+  getLanguageByCode,
+} from './core/app/languages';
+export type { Language } from './core/app/languages';
