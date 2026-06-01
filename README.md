@@ -325,6 +325,33 @@ api.post('/update', data, {}, {
 });
 ```
 
+### Manual Toast Invocation
+
+You can manually trigger toasts using the `toast` object from the SDK:
+
+```ts
+import { toast } from 'instollar-sdk';
+
+toast.success('Action successful!');
+toast.error('An error occurred.');
+toast.info('For your information...');
+toast.warning('Warning message here.');
+
+// The message variant has a longer display duration (10s by default) and premium styling
+toast.message('An improved version of Fluent is now available.', {
+  title: 'New version available'
+});
+
+// Full control
+toast.show({
+  type: 'message',
+  title: 'Update',
+  description: 'A new update is available.',
+  autoClose: 15000,
+  position: 'top-right'
+});
+```
+
 ### Behavior
 - **Hover to Pause**: Hovering over a toast pauses the auto-close timer.
 - **Dismissible**: All toasts have a close button and are dismissible by default.

@@ -24,6 +24,7 @@ const getIcons = (type: ToastType, color: string) => {
     error: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="${color}"/><path d="M10 6V11M10 14H10.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     warning: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 2L1 18H19L10 2Z" fill="${color}"/><path d="M10 8V13M10 15H10.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     info: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="${color}"/><path d="M10 14V9M10 6H10.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    message: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="${color}"/><path d="M10 14V9M10 6H10.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     default: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="${color}"/></svg>`,
   };
   return icons[type] || icons.default;
@@ -37,7 +38,8 @@ const showWebToast = (options: ToastOptions): void => {
     showMobileToast(options);
     return;
   }
-  const { title, description, message, type = 'default', position = 'top-right', autoClose = 5000, closeOnClick = true } = options;
+  const { title, description, message, type = 'default', position = 'top-right', closeOnClick = true } = options;
+  const autoClose = options.autoClose ?? (type === 'message' ? 10000 : 5000);
   
   // Backwards compatibility: if title is missing, use "Success"/"Error" and put message in title if no description
   const finalTitle = title || (type.charAt(0).toUpperCase() + type.slice(1));
@@ -74,6 +76,7 @@ const showWebToast = (options: ToastOptions): void => {
     error: { bg: '#fef2f2', text: '#991b1b', icon: '#ef4444' },
     warning: { bg: '#fffbeb', text: '#92400e', icon: '#f59e0b' },
     info: { bg: '#eff6ff', text: '#1e40af', icon: '#3b82f6' },
+    message: { bg: '#ffffff', text: '#111827', icon: '#012b15' },
     default: { bg: '#f9fafb', text: '#374151', icon: '#6b7280' },
   };
   const theme = colors[type] || colors.default;
@@ -81,7 +84,7 @@ const showWebToast = (options: ToastOptions): void => {
   el.style.cssText = `
     display:flex; align-items:flex-start; padding:16px; margin-bottom:12px; border-radius:12px; 
     box-shadow:0 10px 15px -3px rgba(0,0,0,0.05); pointer-events:auto; background:${theme.bg}; 
-    border:1px solid rgba(0,0,0,0.05); font-family:ui-sans-serif,system-ui,-apple-system; 
+    border:1px solid #e5e7eb; font-family:ui-sans-serif,system-ui,-apple-system; 
     animation:instollar-toast-in 0.3s cubic-bezier(0.21, 1.02, 0.73, 1) forwards; position:relative; min-width:300px;
   `;
 
@@ -134,6 +137,7 @@ export const toast = {
   error: (msg: string, opts?: Omit<ToastOptions, 'message' | 'type'>) => showToast({ ...opts, message: msg, type: 'error' }),
   info: (msg: string, opts?: Omit<ToastOptions, 'message' | 'type'>) => showToast({ ...opts, message: msg, type: 'info' }),
   warning: (msg: string, opts?: Omit<ToastOptions, 'message' | 'type'>) => showToast({ ...opts, message: msg, type: 'warning' }),
+  message: (msg: string, opts?: Omit<ToastOptions, 'message' | 'type'>) => showToast({ ...opts, message: msg, type: 'message' }),
   default: (msg: string, opts?: Omit<ToastOptions, 'message' | 'type'>) => showToast({ ...opts, message: msg, type: 'default' }),
   show: (options: ToastOptions) => showToast(options),
 };
