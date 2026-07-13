@@ -1,0 +1,60 @@
+{
+  "name": "@instollar-dev/ui-web",
+  "version": "1.1.0",
+  "description": "React web UI components for Instollar apps",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/instollar-dev/instollar-sdk.git",
+    "directory": "packages/ui-web"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tailwind.config": "./tailwind.config.ts"
+  },
+  "files": [
+    "dist",
+    "tailwind.config.ts",
+    "postcss.config.js"
+  ],
+  "scripts": {
+    "build:css": "node ../../node_modules/tailwindcss/lib/cli.js -i ./src/styles.css -o ./dist/styles.css --minify",
+    "build:js": "tsup",
+    "build": "npm run build:js && npm run build:css",
+    "dev": "npm run build:css && tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepare": "node -e \"const p=require('path');if(p.resolve(process.env.INIT_CWD||'')!==p.resolve(process.cwd())){require('child_process').execSync('npm run build',{stdio:'inherit'})}\""
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@instollar-dev/tokens": "1.1.0",
+    "recharts": "^3.9.2"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@instollar-dev/tailwind-preset": "*",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}

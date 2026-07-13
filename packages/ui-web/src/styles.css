@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+
+@layer components {
+  .instollar-text-display {
+    @apply font-sans text-4xl font-bold leading-tight text-neutral-900;
+  }
+
+  .instollar-text-heading {
+    @apply font-sans text-3xl font-bold text-neutral-900;
+  }
+
+  .instollar-text-title {
+    @apply font-sans text-xl font-semibold text-neutral-900;
+  }
+
+  .instollar-text-body {
+    @apply font-sans text-base text-neutral-800;
+  }
+
+  .instollar-text-body-sm {
+    @apply font-sans text-sm text-neutral-800;
+  }
+
+  .instollar-text-caption {
+    @apply font-sans text-sm text-neutral-500;
+  }
+
+  .instollar-text-label {
+    @apply font-sans text-sm font-medium text-neutral-700;
+  }
+
+  .instollar-text-overline {
+    @apply font-sans text-xs font-semibold uppercase tracking-wide text-neutral-500;
+  }
+}
+
+@tailwind utilities;

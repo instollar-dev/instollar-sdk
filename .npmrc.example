@@ -1,0 +1,9 @@
+# Copy to your consuming app's .npmrc (do not commit tokens)
+#
+#   cp node_modules/instollar-sdk/.npmrc.example .npmrc
+#
+# Then set NODE_AUTH_TOKEN before install:
+#   export NODE_AUTH_TOKEN=ghp_your_pat_with_read_packages_and_repo
+
+@instollar-dev:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}

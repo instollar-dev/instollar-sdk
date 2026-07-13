@@ -1,0 +1,38 @@
+{
+  "name": "@instollar-dev/tokens",
+  "version": "1.1.0",
+  "description": "Shared design tokens for Instollar web and native apps",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/instollar-dev/instollar-sdk.git",
+    "directory": "packages/tokens"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepare": "node -e \"const p=require('path');if(p.resolve(process.env.INIT_CWD||'')!==p.resolve(process.cwd())){require('child_process').execSync('npm run build',{stdio:'inherit'})}\""
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}
