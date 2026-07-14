@@ -38,7 +38,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@instollar-dev/tokens": "1.1.0",
+    "@instollar-dev/tokens": "file:../tokens",
     "recharts": "^3.9.2"
   },
   "peerDependencies": {
@@ -46,7 +46,7 @@
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
-    "@instollar-dev/tailwind-preset": "*",
+    "@instollar-dev/tailwind-preset": "file:../tailwind-preset",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.0",

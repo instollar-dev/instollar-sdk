@@ -31,12 +31,13 @@
     "prepare": "node -e \"const p=require('path');if(p.resolve(process.env.INIT_CWD||'')!==p.resolve(process.cwd())){require('child_process').execSync('npm run build',{stdio:'inherit'})}\""
   },
   "license": "MIT",
+  "dependencies": {
+    "@instollar-dev/tokens": "file:../tokens"
+  },
   "peerDependencies": {
-    "@instollar-dev/tokens": "*",
     "tailwindcss": ">=3.3.0"
   },
   "devDependencies": {
-    "@instollar-dev/tokens": "*",
     "tailwindcss": "^3.4.0",
     "tsup": "^8.0.0",
     "typescript": "^5.3.0"

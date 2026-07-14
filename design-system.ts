@@ -89,13 +89,15 @@ export type {
 
 export {
   tokens,
+  brand,
   colors,
   spacing,
   fontSize,
   fontWeight,
   lineHeight,
   fontFamily,
+  cssVariables,
   borderRadius,
   shadow,
 } from '@instollar-dev/tokens';
-export type { InstollarTokens, InstollarColors } from '@instollar-dev/tokens';
+export type { InstollarTokens, InstollarColors, InstollarBrand } from '@instollar-dev/tokens';

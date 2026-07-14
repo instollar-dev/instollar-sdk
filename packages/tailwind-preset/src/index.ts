@@ -6,6 +6,7 @@ const preset: Partial<Config> = {
     extend: {
       colors: {
         primary: tokens.colors.primary,
+        secondary: tokens.colors.secondary,
         neutral: tokens.colors.neutral,
         success: tokens.colors.success,
         warning: tokens.colors.warning,
@@ -17,6 +18,9 @@ const preset: Partial<Config> = {
       lineHeight: tokens.lineHeight,
       fontFamily: {
         sans: [tokens.fontFamily.sans],
+        spline: [tokens.fontFamily.spline],
+        inter: [tokens.fontFamily.inter],
+        'open-sans': [tokens.fontFamily.openSans],
         mono: [tokens.fontFamily.mono],
       },
       borderRadius: tokens.borderRadius,

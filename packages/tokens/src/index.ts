@@ -1,21 +1,52 @@
 /**
- * @instollar/tokens – shared design tokens for web and native UI packages.
- * Update these values to match your Instollar style guide.
+ * @instollar/tokens – Instollar design tokens (web + native).
+ *
+ * Brand:
+ * - Primary:   #012b15
+ * - Secondary: #effe3e
+ * - Fonts: Spline Sans (display), Inter (UI), Open Sans (body)
+ *
+ * CSS vars (also injected in @instollar-dev/ui-web styles):
+ *   --font-spline, --font-inter, --font-open-sans
+ *   --color-primary, --color-secondary
  */
 
+/** Core brand anchors from the style guide. */
+export const brand = {
+  primary: '#012b15',
+  secondary: '#effe3e',
+} as const;
+
 export const colors = {
+  /** Dark forest green scale — DEFAULT / 600 ≈ brand primary. */
   primary: {
-    50: '#eef7ff',
-    100: '#d9ecff',
-    200: '#bcdeff',
-    300: '#8ecaff',
-    400: '#59adff',
-    500: '#338bff',
-    600: '#1a6cf5',
-    700: '#1556e1',
-    800: '#1846b6',
-    900: '#193d8f',
-    950: '#142757',
+    50: '#e8f5ee',
+    100: '#cfe9db',
+    200: '#9ed3b7',
+    300: '#6bb88f',
+    400: '#3d9666',
+    500: '#1f6f42',
+    600: '#014d28',
+    700: '#012b15',
+    800: '#012311',
+    900: '#011a0d',
+    950: '#011008',
+    DEFAULT: '#012b15',
+  },
+  /** Lime accent scale — DEFAULT / 500 ≈ brand secondary. */
+  secondary: {
+    50: '#fcffe6',
+    100: '#f7ffb8',
+    200: '#f3ff8a',
+    300: '#effe5c',
+    400: '#effe3e',
+    500: '#effe3e',
+    600: '#d4e020',
+    700: '#a8b310',
+    800: '#7c850c',
+    900: '#55590a',
+    950: '#333506',
+    DEFAULT: '#effe3e',
   },
   neutral: {
     50: '#f8fafc',
@@ -31,9 +62,9 @@ export const colors = {
     950: '#020617',
   },
   success: {
-    50: '#f0fdf4',
-    500: '#22c55e',
-    700: '#15803d',
+    50: '#e8f5ee',
+    500: '#1f6f42',
+    700: '#012b15',
   },
   warning: {
     50: '#fffbeb',
@@ -45,16 +76,13 @@ export const colors = {
     500: '#ef4444',
     700: '#b91c1c',
   },
-  /**
-   * Chart / data-viz palette matching Instollar dashboard mocks.
-   * Forest green area line, donut segments (green / orange / lime).
-   */
+  /** Chart palette aligned to brand green + lime accent. */
   chart: {
-    area: '#1B5E3B',
-    areaMuted: '#2F7A4F',
-    donutPrimary: '#1B5E3B',
+    area: '#012b15',
+    areaMuted: '#1f6f42',
+    donutPrimary: '#012b15',
     donutSecondary: '#E8913A',
-    donutTertiary: '#C5D93D',
+    donutTertiary: '#effe3e',
     grid: '#E5E7EB',
     axis: '#9CA3AF',
   },
@@ -101,9 +129,29 @@ export const lineHeight = {
   relaxed: '1.625',
 } as const;
 
+/**
+ * Font stacks. Load the fonts in the consuming app (e.g. Google Fonts):
+ * Spline Sans, Inter, Open Sans.
+ */
 export const fontFamily = {
+  /** Display / headings — Spline Sans */
+  spline: '"Spline Sans", system-ui, sans-serif',
+  /** UI chrome / labels — Inter */
+  inter: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  /** Body copy — Open Sans */
+  openSans: '"Open Sans", system-ui, sans-serif',
+  /** Default UI stack (Inter) */
   sans: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+} as const;
+
+/** CSS custom properties mirrored in ui-web `:root`. */
+export const cssVariables = {
+  '--font-spline': fontFamily.spline,
+  '--font-inter': fontFamily.inter,
+  '--font-open-sans': fontFamily.openSans,
+  '--color-primary': brand.primary,
+  '--color-secondary': brand.secondary,
 } as const;
 
 export const borderRadius = {
@@ -122,15 +170,18 @@ export const shadow = {
 } as const;
 
 export const tokens = {
+  brand,
   colors,
   spacing,
   fontSize,
   fontWeight,
   lineHeight,
   fontFamily,
+  cssVariables,
   borderRadius,
   shadow,
 } as const;
 
 export type InstollarTokens = typeof tokens;
 export type InstollarColors = typeof colors;
+export type InstollarBrand = typeof brand;

@@ -506,6 +506,8 @@ npm install instollar-sdk@^1.1.0 axios
 
 Tokens, web UI, Iconsax icons, and `iconsax-react` install automatically as transitive dependencies.
 
+> **Git installs (`github:...#dev`):** this monorepo uses `file:packages/...` for internal packages so npm does **not** look for `@instollar-dev/*` on registry.npmjs.org. That only works while those packages are unpublished. After GitHub Packages publish, registry versions can replace `file:`.
+
 **4. CI (GitHub Actions)** – no git config needed, just registry auth:
 
 ```yaml

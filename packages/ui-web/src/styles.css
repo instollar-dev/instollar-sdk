@@ -1,37 +1,52 @@
 @tailwind base;
 @tailwind components;
 
+@layer base {
+  :root {
+    --font-spline: "Spline Sans", system-ui, sans-serif;
+    --font-inter: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-open-sans: "Open Sans", system-ui, sans-serif;
+    --color-primary: #012b15;
+    --color-secondary: #effe3e;
+  }
+
+  body {
+    font-family: var(--font-inter);
+    color: theme('colors.neutral.900');
+  }
+}
+
 @layer components {
   .instollar-text-display {
-    @apply font-sans text-4xl font-bold leading-tight text-neutral-900;
+    @apply font-spline text-4xl font-bold leading-tight text-primary-700;
   }
 
   .instollar-text-heading {
-    @apply font-sans text-3xl font-bold text-neutral-900;
+    @apply font-spline text-3xl font-bold text-primary-700;
   }
 
   .instollar-text-title {
-    @apply font-sans text-xl font-semibold text-neutral-900;
+    @apply font-spline text-xl font-semibold text-primary-700;
   }
 
   .instollar-text-body {
-    @apply font-sans text-base text-neutral-800;
+    @apply font-open-sans text-base text-neutral-800;
   }
 
   .instollar-text-body-sm {
-    @apply font-sans text-sm text-neutral-800;
+    @apply font-open-sans text-sm text-neutral-800;
   }
 
   .instollar-text-caption {
-    @apply font-sans text-sm text-neutral-500;
+    @apply font-inter text-sm text-neutral-500;
   }
 
   .instollar-text-label {
-    @apply font-sans text-sm font-medium text-neutral-700;
+    @apply font-inter text-sm font-medium text-neutral-700;
   }
 
   .instollar-text-overline {
-    @apply font-sans text-xs font-semibold uppercase tracking-wide text-neutral-500;
+    @apply font-inter text-xs font-semibold uppercase tracking-wide text-neutral-500;
   }
 }
 

@@ -39,28 +39,28 @@ const variantStyles: Record<
   { container: ViewStyle; label: TextStyle; pressed: ViewStyle }
 > = {
   primary: {
-    container: { backgroundColor: colors.primary[600] },
+    container: { backgroundColor: colors.primary.DEFAULT },
     label: { color: colors.white },
-    pressed: { backgroundColor: colors.primary[700] },
+    pressed: { backgroundColor: colors.primary[800] },
   },
   secondary: {
-    container: { backgroundColor: colors.neutral[100] },
-    label: { color: colors.neutral[900] },
-    pressed: { backgroundColor: colors.neutral[200] },
+    container: { backgroundColor: colors.secondary.DEFAULT },
+    label: { color: colors.primary.DEFAULT },
+    pressed: { backgroundColor: colors.secondary[600] },
   },
   outline: {
     container: {
       backgroundColor: colors.white,
       borderWidth: 1,
-      borderColor: colors.neutral[300],
+      borderColor: colors.primary.DEFAULT,
     },
-    label: { color: colors.neutral[900] },
-    pressed: { backgroundColor: colors.neutral[50] },
+    label: { color: colors.primary.DEFAULT },
+    pressed: { backgroundColor: colors.primary[50] },
   },
   ghost: {
     container: { backgroundColor: colors.transparent },
-    label: { color: colors.neutral[700] },
-    pressed: { backgroundColor: colors.neutral[100] },
+    label: { color: colors.primary.DEFAULT },
+    pressed: { backgroundColor: colors.primary[50] },
   },
   danger: {
     container: { backgroundColor: colors.error[500] },

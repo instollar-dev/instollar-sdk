@@ -49,10 +49,10 @@
   },
   "files": [
     "dist",
-    "packages/tokens/dist",
-    "packages/ui-web/dist",
-    "packages/ui-web/tailwind.config.ts",
-    "packages/icons/dist",
+    "packages/tokens",
+    "packages/icons",
+    "packages/ui-web",
+    "packages/tailwind-preset",
     "README.md",
     ".npmrc.example"
   ],
@@ -82,9 +82,9 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@instollar-dev/icons": "1.1.0",
-    "@instollar-dev/tokens": "1.1.0",
-    "@instollar-dev/ui-web": "1.1.0",
+    "@instollar-dev/icons": "file:packages/icons",
+    "@instollar-dev/tokens": "file:packages/tokens",
+    "@instollar-dev/ui-web": "file:packages/ui-web",
     "axios": "^1.6.0",
     "iconsax-react": "^0.0.8",
     "socket.io-client": "^4.8.3"

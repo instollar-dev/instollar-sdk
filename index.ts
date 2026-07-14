@@ -163,12 +163,14 @@ export {
   ICON_NAMES,
   isIconName,
   tokens,
+  brand,
   colors,
   spacing,
   fontSize,
   fontWeight,
   lineHeight,
   fontFamily,
+  cssVariables,
   borderRadius,
   shadow,
 } from './design-system';
@@ -194,4 +196,5 @@ export type {
   BaseIconProps,
   InstollarTokens,
   InstollarColors,
+  InstollarBrand,
 } from './design-system';

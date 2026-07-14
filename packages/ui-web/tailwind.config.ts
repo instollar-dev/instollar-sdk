@@ -21,9 +21,12 @@ const config: Config = {
     'instollar-text-caption',
     'instollar-text-label',
     'instollar-text-overline',
+    'font-spline',
+    'font-inter',
+    'font-open-sans',
     {
       pattern:
-        /^(bg|text|border|ring|from|to|via)-(primary|neutral|success|warning|error)(-(50|100|200|300|400|500|600|700|800|900|950))?$/,
+        /^(bg|text|border|ring|from|to|via)-(primary|secondary|neutral|success|warning|error)(-(50|100|200|300|400|500|600|700|800|900|950))?$/,
     },
     {
       pattern: /^(p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|space-[xy])-(0|1|2|3|4|5|6|8|10|12|16)$/,
